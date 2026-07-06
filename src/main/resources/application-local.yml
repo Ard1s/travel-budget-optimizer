@@ -1,0 +1,30 @@
+# Профиль LOCAL — быстрый запуск без Postgres/Docker.
+# Активация:  ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+#
+# Значения отсюда ПЕРЕЗАПИСЫВАЮТ application.yml, когда профиль активен.
+# Реальные запуски (Postgres + Flyway) идут БЕЗ этого профиля.
+spring:
+  datasource:
+    # H2 в памяти. MODE=PostgreSQL — H2 имитирует диалект Postgres,
+    # чтобы поведение было ближе к боевой БД.
+    # DB_CLOSE_DELAY=-1 — база живёт, пока работает приложение.
+    url: jdbc:h2:mem:travel_budget;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      # На H2 схему создаёт сам Hibernate из @Entity (create-drop = создать при старте,
+      # удалить при остановке). Flyway здесь не используем — миграции написаны под Postgres.
+      ddl-auto: create-drop
+    show-sql: true
+
+  flyway:
+    enabled: false            # в local миграции отключены — схему делает ddl-auto
+
+  # H2-консоль: веб-интерфейс к in-memory базе на http://localhost:8080/h2-console
+  # (JDBC URL при входе: тот же, что выше). Доступ настроим, когда появится SecurityConfig.
+  h2:
+    console:
+      enabled: true

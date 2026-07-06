@@ -1,0 +1,9 @@
+# Что НЕ копировать в build-контекст Docker (ускоряет сборку, уменьшает образ).
+target/
+lambda/
+.git/
+.idea/
+*.iml
+.mvn/wrapper/maven-wrapper.jar
+*.log
+.env

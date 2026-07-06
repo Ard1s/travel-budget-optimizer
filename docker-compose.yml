@@ -1,0 +1,46 @@
+# Полный локальный стек: приложение + PostgreSQL.
+#
+# Запуск:   docker compose up --build          (соберёт образ из Dockerfile и поднимет всё)
+# Стоп:     docker compose down
+# С данными: том postgres_data переживает перезапуск.
+#
+# Приложение стартует в профиле по умолчанию => реальный Postgres + Flyway-миграции
+# (в отличие от локального H2-профиля `local`, который БД не требует).
+services:
+  app:
+    build: .
+    container_name: travel_app
+    ports:
+      - "8080:8080"
+    environment:
+      # Имя хоста БД = имя сервиса "postgres" во внутренней сети compose.
+      DB_URL: jdbc:postgresql://postgres:5432/travel_budget
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      # Секреты берём из .env (см. .env.example). :- значение по умолчанию для dev.
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-change-me-please-minimum-256-bits-long-0123456789}
+      AI_API_KEY: ${AI_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy   # ждём, пока БД реально примет подключения
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: travel_postgres
+    environment:
+      POSTGRES_DB: travel_budget
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d travel_budget"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

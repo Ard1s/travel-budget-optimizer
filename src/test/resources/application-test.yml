@@ -1,0 +1,26 @@
+# Профиль "test" для интеграционных тестов (@ActiveProfiles("test")).
+# H2 в памяти, схему создаёт Hibernate, Flyway выключен.
+spring:
+  datasource:
+    url: jdbc:h2:mem:travel_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  flyway:
+    enabled: false
+
+app:
+  jwt:
+    # Отдельный тестовый секрет (>= 256 бит). Короткий срок жизни ок для тестов.
+    secret: test-secret-key-minimum-256-bits-long-for-hs256-abcdef0123456789
+    expiration: 3600000
+
+ai:
+  api:
+    key: ""
+    url: http://localhost/unused
+    model: claude-sonnet-4-6

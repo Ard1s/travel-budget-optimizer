@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: travel-budget-optimizer
+
+  datasource:
+    # ${VAR:default} — если переменная окружения не задана, берём значение после ":".
+    # Так проект запускается локально "из коробки", а в проде значения приходят из ENV.
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/travel_budget}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      # validate = Hibernate НЕ меняет схему, только сверяет её с @Entity при старте.
+      # Схему создаёт только Flyway (правило проекта №5). Никогда не ставим create/update в этом проекте.
+      ddl-auto: validate
+    show-sql: true            # печатать SQL в лог (удобно на этапе разработки)
+    open-in-view: false       # выключаем anti-pattern OSIV: транзакция не тянется в слой представления
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration   # где лежат V1__, V2__, ... (появятся в Модуле 2)
+
+server:
+  port: 8080
+
+# Actuator: наружу отдаём только health (для Docker HEALTHCHECK). Остальное скрыто.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+
+# Кастомные настройки приложения (наш неймспейс "app")
+app:
+  jwt:
+    # ВНИМАНИЕ: это значение по умолчанию — ТОЛЬКО для локальной разработки.
+    # В проде обязательно задать через ENV JWT_SECRET (правило проекта №3).
+    # Для HS256 секрет должен быть >= 256 бит (>= 32 байта). Здесь строка длиннее.
+    secret: ${JWT_SECRET:dev-only-secret-change-me-please-minimum-256-bits-long-0123456789}
+    expiration: 86400000     # 24 часа в миллисекундах
+
+ai:
+  api:
+    key: ${AI_API_KEY:}      # пусто по умолчанию; реальный ключ только через ENV
+    url: ${AI_API_URL:https://api.anthropic.com/v1/messages}
+    model: claude-sonnet-4-6
