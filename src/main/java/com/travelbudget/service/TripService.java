@@ -51,6 +51,14 @@ public class TripService {
         trip.setEndDate(req.endDate());
         trip.setBudget(req.budget());
         trip.setCurrency(req.currency());
+        // Предпочтения (Фаза 1). interests из списка -> строка через запятую.
+        trip.setHotelStars(req.hotelStars());
+        trip.setAccommodationPreference(req.accommodationPreference());
+        trip.setFoodStyle(req.foodStyle());
+        trip.setInterests(
+                (req.interests() == null || req.interests().isEmpty())
+                        ? null
+                        : String.join(",", req.interests()));
         // status остаётся DRAFT (значение по умолчанию в сущности)
 
         return toResponse(tripRepository.save(trip));

@@ -79,6 +79,24 @@ public class Trip {
     @Column(nullable = false, length = 50)
     private TripStatus status = TripStatus.DRAFT;
 
+    // ----- Предпочтения путешественника (Фаза 1). Все необязательные. -----
+
+    // Минимальное число звёзд отеля (1..5).
+    @Column(name = "hotel_stars")
+    private Integer hotelStars;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "accommodation_preference", length = 30)
+    private AccommodationPreference accommodationPreference;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "food_style", length = 30)
+    private FoodStyle foodStyle;
+
+    // Интересы (что посмотреть): коды через запятую, напр. "BEACH,MUSEUMS,NATURE".
+    @Column(length = 500)
+    private String interests;
+
     /*
      * mappedBy = "trip" => владелец связи — поле trip в TripDay (там внешний ключ).
      * orphanRemoval = true => если удалить день из этого списка, он удалится и из БД.

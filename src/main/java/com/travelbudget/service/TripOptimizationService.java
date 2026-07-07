@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Оркестрация AI-оптимизации маршрута:
  *   1. берём поездку (с проверкой владельца — через TripService, без дублирования);
@@ -38,13 +41,22 @@ public class TripOptimizationService {
         // Проверка "твоя ли поездка" переиспользуется из TripService.
         Trip trip = tripService.getOwnedTripEntity(tripId, userEmail);
 
+        // Интересы хранятся строкой "BEACH,MUSEUMS" -> превращаем в список.
+        List<String> interests = (trip.getInterests() == null || trip.getInterests().isBlank())
+                ? List.of()
+                : Arrays.asList(trip.getInterests().split(","));
+
         TripOptimizationRequest request = new TripOptimizationRequest(
                 trip.getOriginCity(),
                 trip.getDestination(),
                 trip.getStartDate(),
                 trip.getEndDate(),
                 trip.getBudget(),
-                trip.getCurrency()
+                trip.getCurrency(),
+                trip.getHotelStars(),
+                trip.getAccommodationPreference(),
+                trip.getFoodStyle(),
+                interests
         );
 
         String rawResponse = aiClient.optimizeTrip(request);
