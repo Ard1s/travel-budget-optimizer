@@ -39,6 +39,8 @@ public class SecurityConfig {
                 // Неаутентифицированный доступ к защищённому ресурсу -> наш 401 (а не дефолтный 403).
                 .exceptionHandling(eh -> eh.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
+                        // Веб-страница интерфейса (статика) — открыта:
+                        .requestMatchers("/", "/index.html", "/favicon.ico").permitAll()
                         // Публичные эндпоинты:
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(
