@@ -61,6 +61,9 @@ ai:
   api:                       # Anthropic (Claude) — платно
     key: ${AI_API_KEY:}
     model: ${AI_API_MODEL:claude-opus-4-8}
-  gemini:                    # Google Gemini — бесплатно
+  gemini:                    # Google Gemini — бесплатно (лимит 20/день)
     key: ${GEMINI_API_KEY:}
     model: ${GEMINI_MODEL:gemini-2.5-flash}
+  groq:                      # Groq — бесплатно, щедрые лимиты
+    key: ${GROQ_API_KEY:}
+    model: ${GROQ_MODEL:llama-3.3-70b-versatile}

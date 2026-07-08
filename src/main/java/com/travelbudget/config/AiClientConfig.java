@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travelbudget.client.AiClient;
 import com.travelbudget.client.AnthropicAiClient;
 import com.travelbudget.client.GeminiAiClient;
+import com.travelbudget.client.GroqAiClient;
 import com.travelbudget.client.MockAiClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,17 @@ public class AiClientConfig {
             @Value("${ai.api.model}") String anthropicModel,
             @Value("${ai.gemini.key:}") String geminiKey,
             @Value("${ai.gemini.model}") String geminiModel,
+            @Value("${ai.groq.key:}") String groqKey,
+            @Value("${ai.groq.model}") String groqModel,
             ObjectMapper objectMapper) {
 
         String p = provider == null ? "auto" : provider.trim().toLowerCase();
         boolean auto = p.equals("auto");
 
+        if (p.equals("groq") || (auto && StringUtils.hasText(groqKey))) {
+            log.info("AI: используется Groq (модель {})", groqModel);
+            return new GroqAiClient(groqKey, groqModel, objectMapper);
+        }
         if (p.equals("gemini") || (auto && StringUtils.hasText(geminiKey))) {
             log.info("AI: используется Google Gemini (модель {})", geminiModel);
             return new GeminiAiClient(geminiKey, geminiModel, objectMapper);
