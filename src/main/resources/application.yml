@@ -56,7 +56,11 @@ app:
     expiration: 86400000     # 24 часа в миллисекундах
 
 ai:
-  api:
-    key: ${AI_API_KEY:}      # пусто по умолчанию; реальный ключ из local.properties или ENV
-    # Модель Claude. Есть ключ -> используется реальный Claude, нет -> демо-мок.
+  # Какой провайдер использовать: auto | gemini | anthropic | mock
+  provider: ${AI_PROVIDER:auto}
+  api:                       # Anthropic (Claude) — платно
+    key: ${AI_API_KEY:}
     model: ${AI_API_MODEL:claude-opus-4-8}
+  gemini:                    # Google Gemini — бесплатно
+    key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.5-flash}
