@@ -5,6 +5,9 @@
 .claude/
 dependency-reduced-pom.xml
 
+### Локальные секреты (ключи API) — НЕ коммитим ###
+local.properties
+
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

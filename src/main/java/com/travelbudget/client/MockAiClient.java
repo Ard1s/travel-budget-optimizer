@@ -7,8 +7,6 @@ import com.travelbudget.entity.ExpenseCategory;
 import com.travelbudget.entity.FoodStyle;
 import com.travelbudget.exception.AiIntegrationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,11 +23,9 @@ import java.util.List;
  * зависящие от выбора пользователя. Поэтому «5★ у моря + рестораны» может дать
  * перерасход (remaining < 0), а «хостел + магазины» оставит запас — это уже осмысленно.
  *
- * Это по-прежнему эвристика, НЕ реальные цены. За реальными нужны Claude (план)
- * и Aviasales/Hotellook (цены) — фазы 2 и 3.
+ * Это по-прежнему эвристика, НЕ реальные цены. Используется, когда НЕ задан ключ Claude
+ * (иначе AiClientConfig подставит реальный AnthropicAiClient).
  */
-@Component
-@Profile("local")
 @RequiredArgsConstructor
 public class MockAiClient implements AiClient {
 

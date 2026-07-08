@@ -2,6 +2,11 @@ spring:
   application:
     name: travel-budget-optimizer
 
+  # Подхватываем локальные секреты (ключи API), если файл есть.
+  # optional: — приложение не упадёт, когда файла нет (напр. в проде секреты идут из ENV).
+  config:
+    import: optional:file:./local.properties
+
   datasource:
     # ${VAR:default} — если переменная окружения не задана, берём значение после ":".
     # Так проект запускается локально "из коробки", а в проде значения приходят из ENV.
@@ -52,6 +57,6 @@ app:
 
 ai:
   api:
-    key: ${AI_API_KEY:}      # пусто по умолчанию; реальный ключ только через ENV
-    url: ${AI_API_URL:https://api.anthropic.com/v1/messages}
-    model: claude-sonnet-4-6
+    key: ${AI_API_KEY:}      # пусто по умолчанию; реальный ключ из local.properties или ENV
+    # Модель Claude. Есть ключ -> используется реальный Claude, нет -> демо-мок.
+    model: ${AI_API_MODEL:claude-opus-4-8}
